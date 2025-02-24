@@ -1,10 +1,11 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ManagerHome from "../Views/Pages/Teamlead/ManagerHome";
-import ProfileScreen from "../Views/Pages/ProfileScreen";
-import { AntDesign, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, Ionicons,MaterialCommunityIcons } from "@expo/vector-icons";
 import { StatusBar } from "react-native";
-import ManagerNotification from "../Views/Pages/Teamlead/ManagerNotification";
+import ProfilePage from "../Views/Pages/ProfilePage";
+import ManagerRequest from "../Views/Pages/Teamlead/ManagerRequest";
+import ManagerHistory from "../Views/Pages/Teamlead/ManagerHistory";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,8 +25,18 @@ export const TeamLeadNavigation = () => {
           }}
         />
         <Tab.Screen
-          name="Notification"
-          component={ManagerNotification}
+          name="Requests"
+          component={ManagerRequest}
+          options={{
+            tabBarIcon: () => (
+              <MaterialCommunityIcons name="book-plus" size={24} color="black" />
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="History"
+          component={ManagerHistory}
           options={{
             tabBarIcon: () => (
               <Ionicons name="notifications" size={24} color="black" />
@@ -34,7 +45,7 @@ export const TeamLeadNavigation = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={ProfileScreen}
+          component={ProfilePage}
           options={{
             tabBarIcon: () => (
               <MaterialIcons name="person" size={30} color="black" />

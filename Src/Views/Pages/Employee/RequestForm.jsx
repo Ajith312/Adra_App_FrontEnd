@@ -13,12 +13,13 @@ import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { leaveAndPermissionRequest } from "../../../Redux/Action/commonAction";
+import { AntDesign } from "@expo/vector-icons";
 
 const RequestForm = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const {token}=useSelector((state)=>state.commonState)
+  const { token } = useSelector((state) => state.commonState);
 
   const [managerId, setManagerId] = useState("");
   const [request, setRequest] = useState("");
@@ -110,140 +111,158 @@ const RequestForm = () => {
 
   const handlePermissionSubmit = (type) => {
     if (!managerId || !request || !date || !comments) {
-        alert("Please fill all the fields");
-        return;
+      alert("Please fill all the fields");
+      return;
     }
 
     let requestDetails = {
-        request,
-        date: date.toDateString(),
-        comments,
+      request,
+      date: date.toDateString(),
+      comments,
     };
 
     if (type === "permission") {
-        if (!fromTime || !toTime) {
-            alert("Please fill all the fields");
-            return;
-        }
-        requestDetails = {
-            ...requestDetails,
-            fromTime: fromTime.toLocaleTimeString(),
-            toTime: toTime.toLocaleTimeString(),
-        };
-    } else if (type === "leave") {
-        if (!days) {
-            alert("Please fill all the fields");
-            return;
-        }
-        requestDetails = { ...requestDetails, days };
-    } else {
-        alert("Please select request type");
+      if (!fromTime || !toTime) {
+        alert("Please fill all the fields");
         return;
+      }
+      requestDetails = {
+        ...requestDetails,
+        fromTime: fromTime.toLocaleTimeString(),
+        toTime: toTime.toLocaleTimeString(),
+      };
+    } else if (type === "leave") {
+      if (!days) {
+        alert("Please fill all the fields");
+        return;
+      }
+      requestDetails = { ...requestDetails, days };
+    } else {
+      alert("Please select request type");
+      return;
     }
 
     const payload = { managerId, requestDetails };
     dispatch(leaveAndPermissionRequest(token, payload));
     resetInputvalues();
-};
+  };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.label}>To</Text>
-      <Picker
-        selectedValue={managerId}
-        onValueChange={(itemValue) => setManagerId(itemValue)}
-        style={styles.input}
-      >
-        <Picker.Item label="Select Manager" value="" />
-        <Picker.Item label="Mr.AnguSiva" value="67aacb5a0b0bed162f603b25" />
-        <Picker.Item label="Mr.SivaKumar" value="67ac33e95d32048b53eea005" />
-      </Picker>
-
-      <Text style={styles.label}>Request Type</Text>
-      <Picker
-        selectedValue={request}
-        onValueChange={(itemValue) => setRequest(itemValue)}
-        style={styles.input}
-      >
-        <Picker.Item label="Select Request" value="" />
-        <Picker.Item label="Leave" value="leave" />
-        <Picker.Item label="Permission" value="permission" />
-      </Picker>
-
-      <Text style={styles.label}>Date</Text>
-      <Text style={styles.inputNew} onPress={() => setShowDatePicker(true)}>
-        {date ? date.toDateString() : "Select Date"}
-      </Text>
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
-
-      {request === "leave" && (
-        <>
-          <Text style={styles.label}>No of days</Text>
+       {/* <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+        >
+          <AntDesign name="arrowleft" size={20} color="black" />
+        </TouchableOpacity> */}
+      <View style={styles.formCard}>
+        <Text style={styles.formHeadText}>REQUEST FORM</Text>
+        <Text style={styles.label}>To</Text>
+        <View style={styles.pickerContainer}>
           <Picker
-            selectedValue={days}
-            onValueChange={(itemValue) => setDays(itemValue)}
-            style={styles.input}
+            selectedValue={managerId}
+            onValueChange={(itemValue) => setManagerId(itemValue)}
+            style={styles.picker}
           >
-            <Picker.Item label="Select days" value="" />
-            <Picker.Item label="1" value="1" />
-            <Picker.Item label="2" value="2" />
-          </Picker>
-        </>
-      )}
-
-      {request === "permission" && (
-        <>
-          <Text style={styles.label}>From</Text>
-          <Text
-            style={styles.inputNew}
-            onPress={() => setShowFromTimePicker(true)}
-          >
-            {fromTime ? fromTime.toLocaleTimeString() : "Select Time"}
-          </Text>
-          {showFromTimePicker && (
-            <DateTimePicker
-              value={fromTime}
-              mode="time"
-              is24Hour={false}
-              display="default"
-              onChange={handleFromTimeChange}
+            <Picker.Item label="Select Manager" value="" />
+            <Picker.Item label="Mr.AnguSiva" value="67aacb5a0b0bed162f603b25" />
+            <Picker.Item
+              label="Mr.SivaKumar"
+              value="67b56b6fdf481eddcb85d0c1"
             />
-          )}
-
-          <Text style={styles.label}>To</Text>
-          <Text style={styles.inputNew}>
-            {toTime ? toTime.toLocaleTimeString() : "Select Time"}
-          </Text>
-        </>
-      )}
-
-      <Text style={styles.label}>Comments</Text>
-      <TextInput
-        style={styles.textArea}
-        multiline
-        numberOfLines={8}
-        placeholder="Enter your comments"
-        value={comments}
-        onChangeText={(text) => setComments(text)}
-      />
-
-      <TouchableOpacity
-        style={{ width: "100%" }}
-        onPress={() => {
-          handlePermissionSubmit(request);
-        }}
-      >
-        <View style={styles.SubmitBtn}>
-          <Text style={styles.btntext}>Submit</Text>
+          </Picker>
         </View>
-      </TouchableOpacity>
+
+        <Text style={styles.label}>Request Type</Text>
+        <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={request}
+          onValueChange={(itemValue) => setRequest(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Select Request" value="" />
+          <Picker.Item label="Leave" value="leave" />
+          <Picker.Item label="Permission" value="permission" />
+        </Picker>
+        </View>
+
+        <Text style={styles.label}>Date</Text>
+        <Text style={styles.inputNew} onPress={() => setShowDatePicker(true)}>
+          {date ? date.toDateString() : "Select Date"}
+        </Text>
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
+
+        {request === "leave" && (
+          <>
+            <Text style={styles.label}>No of days</Text>
+            <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={days}
+              onValueChange={(itemValue) => setDays(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select days" value="" />
+              <Picker.Item label="1" value="1" />
+              <Picker.Item label="2" value="2" />
+            </Picker>
+            </View>
+          </>
+        )}
+
+        {request === "permission" && (
+          <>
+            <Text style={styles.label}>From</Text>
+            <Text
+              style={styles.inputNew}
+              onPress={() => setShowFromTimePicker(true)}
+            >
+              {fromTime ? fromTime.toLocaleTimeString() : "Select Time"}
+            </Text>
+            {showFromTimePicker && (
+              <DateTimePicker
+                value={fromTime}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                onChange={handleFromTimeChange}
+              />
+            )}
+
+            <Text style={styles.label}>To</Text>
+            <Text style={styles.inputNew}>
+              {toTime ? toTime.toLocaleTimeString() : "Select Time"}
+            </Text>
+          </>
+        )}
+
+        <Text style={styles.label}>Comments</Text>
+        <TextInput
+          style={styles.textArea}
+          multiline
+          numberOfLines={8}
+          placeholder="Enter your comments"
+          value={comments}
+          onChangeText={(text) => setComments(text)}
+        />
+
+        <TouchableOpacity
+          style={{ width: "100%" }}
+          onPress={() => {
+            handlePermissionSubmit(request);
+          }}
+        >
+          <View style={styles.SubmitBtn}>
+            <Text style={styles.btntext}>Submit</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -254,12 +273,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#E4E3E3",
-    padding: 16,
+    padding: 8,
+  },
+  formCard: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 8,
+  },
+
+  formHeadText: {
+    fontSize: 16,
+    fontWeight: "700",
+    textAlign: "center",
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 8,
     color: "#333",
+  },
+  pickerContainer: {
+    borderWidth: 1, 
+    borderColor: "#ccc", 
+    borderRadius: 5, 
+    overflow: "hidden", 
+    marginBottom: 10, 
+  },
+  picker: {
+    color: "#000", 
+    backgroundColor: "#fff", 
   },
   input: {
     borderWidth: 1,
@@ -298,5 +340,15 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  backButton: {
+    // marginTop: 20,
+    marginBottom: 10,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "#F5F5F5",
   },
 });

@@ -6,10 +6,17 @@ const commonSlice = createSlice({
         email: "",
         password: "",
         token: null,
+        fcmToken:null,
         role: null,
         profileDetails:[],
         managerNotificationDetails:[],
-        employeeNotificationDetails:[]
+        employeeNotificationDetails:[],
+        filteredData:[],
+        teamMembersDetails:[],
+        toastVisible:false,
+        toastType:"",
+        toastMessage:"",
+        modalShow:false
         
 
         
@@ -40,6 +47,30 @@ const commonSlice = createSlice({
             state.employeeNotificationDetails=action.payload?.data
            
         },
+        updateFilteredData:(state,action)=>{
+            state.filteredData = action.payload
+
+        },
+        updateTeamMembersData:(state,action)=>{
+            state.teamMembersDetails = action?.payload?.data
+
+        },
+        showToast: (state, action) => {
+            state.toastVisible = true;
+            state.toastType = action.payload.type;
+            state.toastMessage = action.payload.message;
+          },
+        hideToast: (state) => {
+            state.toastVisible = false;
+            state.toastMessage = '';
+          },
+        updateModelShow:(state)=>{
+            state.modalShow=!state.modalShow
+          },
+        setFcmToken:(state,action)=>{
+            console.log(action.payload);
+            state.fcmToken=action?.payload
+        }
         
         
     }
@@ -53,7 +84,13 @@ export const {
     logoutUser,
     updateProfileDetails,
     updateManagerNotificationDetails,
-    updateEmployeeNotificationDetails
+    updateEmployeeNotificationDetails,
+    updateFilteredData,
+    updateTeamMembersData,
+    showToast,
+    hideToast,
+    updateModelShow,
+    setFcmToken
 } = actions;
 
 export default reducer;
