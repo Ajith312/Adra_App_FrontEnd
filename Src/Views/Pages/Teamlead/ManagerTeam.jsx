@@ -80,7 +80,7 @@ const ManagerTeam = () => {
                             <Picker
                               style={styles.picker}
                             >
-                              <Picker.Item label="Select Request" value="" style={styles.value} />
+                              <Picker.Item label="Select Role" value="" style={styles.value} />
                               <Picker.Item label="Front-End Developer" value="Front-End Developer" />
                               <Picker.Item label="Back-end Developer" value="Back-end Developer" />
                               <Picker.Item label="UI/Ux Developer" value="UI/Ux Developer" />

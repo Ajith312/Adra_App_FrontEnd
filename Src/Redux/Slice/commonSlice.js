@@ -16,7 +16,8 @@ const commonSlice = createSlice({
         toastVisible:false,
         toastType:"",
         toastMessage:"",
-        modalShow:false
+        modalShow:false,
+        notificationTrigger:0
         
 
         
@@ -68,8 +69,11 @@ const commonSlice = createSlice({
             state.modalShow=!state.modalShow
           },
         setFcmToken:(state,action)=>{
-            console.log(action.payload);
             state.fcmToken=action?.payload
+        },
+        setNotificationTrigger:(state,action)=>{
+            state.notificationTrigger=action?.payload
+
         }
         
         
@@ -90,7 +94,8 @@ export const {
     showToast,
     hideToast,
     updateModelShow,
-    setFcmToken
+    setFcmToken,
+    setNotificationTrigger
 } = actions;
 
 export default reducer;

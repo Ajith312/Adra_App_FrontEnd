@@ -21,10 +21,12 @@ const RequestCard = ({item}) => {
                   <Text style={item.requestDetails.fromTime ? styles.details : styles.timeHide}>
                     Time: {item.requestDetails?.fromTime} to {item.requestDetails?.toTime} 
                   </Text>
+                  <Text style={styles.details}>{item.requestDetails?.comments}</Text>
                   <Text style={styles.details}>CL Balance:{item?.employeeDetails?.casualLeave} </Text>
                   <Text style={styles.details}>
                     Permission Balance: {item?.employeeDetails?.permission}
                   </Text>
+                  
                   <Text style={styles.details}>Leave Taken:{item?.employeeDetails?.leaveDays} </Text>
                   <View style={styles.btnContainer}>
                     <TouchableOpacity style={styles.button} onPress={()=>{handleRequestSubmit({id:item._id,acceptedStatus:"approved"})}}>

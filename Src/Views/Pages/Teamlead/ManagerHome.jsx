@@ -28,6 +28,7 @@ const ManagerHome = () => {
     token,
     teamMembersDetails,
     managerNotificationDetails,
+    notificationTrigger
     
   } = useSelector((state) => state.commonState);
 
@@ -48,7 +49,7 @@ const ManagerHome = () => {
         dispatch(getTeamMembersDetails(token));
         dispatch(getLeaveAndPermissionRequest(token));
       }
-    }, [token, dispatch])
+    }, [token, dispatch,notificationTrigger])
   );
 
   

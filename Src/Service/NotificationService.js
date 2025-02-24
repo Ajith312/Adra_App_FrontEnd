@@ -2,12 +2,11 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import Toast from "react-native-toast-message";
-import { setFcmToken } from "../Redux/Slice/commonSlice";
-
+import { setFcmToken, setNotificationTrigger } from "../Redux/Slice/commonSlice";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true, 
+    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
@@ -30,7 +29,7 @@ export const registerForPushNotificationsAsync = async (dispatch) => {
   }
 
   if (finalStatus !== "granted") {
-    alert("Failed to get push token for push notification!");
+    alert("Failed to get push token for push notifications!");
     return;
   }
 
@@ -51,26 +50,27 @@ export const registerForPushNotificationsAsync = async (dispatch) => {
   return fcmToken;
 };
 
-export const setupNotificationListeners = (navigationRef) => {
-  const notificationListener = Notifications.addNotificationReceivedListener(
-    (notification) => {
-      Toast.show({
-        type: "success",
-        text1: notification.request.content.title,
-        text2: notification.request.content.body,
-      });
-    }
-  );
+export const setupNotificationListeners = (navigationRef, onNotificationReceived) => {
+  const notificationListener = Notifications.addNotificationReceivedListener((notification) => {
+    console.log("Notification Received: ", notification);
 
-  const responseListener = Notifications.addNotificationResponseReceivedListener(
-    (response) => {
-      const data = response.notification.request.content.data;
+    Toast.show({
+      type: "success",
+      text1: notification.request.content.title,
+      text2: notification.request.content.body,
+    });
 
-      if (data && data.screen && navigationRef.isReady()) {
-        navigationRef.current?.navigate(data.screen);
-      }
+    if (onNotificationReceived) {
+      onNotificationReceived(); 
     }
-  );
+  });
+
+  const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
+    const data = response.notification.request.content.data;
+    if (data && data.screen && navigationRef.isReady()) {
+      navigationRef.current?.navigate(data.screen);
+    }
+  });
 
   return { notificationListener, responseListener };
 };

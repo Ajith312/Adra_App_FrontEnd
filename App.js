@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNavigationContainerRef } from "@react-navigation/native";
 import { AppNavigation } from "./Src/Navigation/AppNavigation";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./Store";
 import Toast from "react-native-toast-message";
 import GlobalToast from "./Src/Components/GlobalToast";
 import * as Notifications from "expo-notifications";
 import { registerForPushNotificationsAsync, setupNotificationListeners } from "./Src/Service/NotificationService";
+import { setNotificationTrigger } from "./Src/Redux/Slice/commonSlice";
 
 
 export const navigationRef = createNavigationContainerRef();
@@ -24,11 +25,18 @@ const App = () => {
   const dispatch = useDispatch();
   const notificationListener = useRef();
   const responseListener = useRef();
+  const {notificationTrigger} = useSelector((state) => state.commonState);
+
+
+  const handleNotificationReceived = () => {
+    dispatch(setNotificationTrigger(notificationTrigger + 1));
+  };
 
   useEffect(() => {
     registerForPushNotificationsAsync(dispatch);
 
-    const listeners = setupNotificationListeners(navigationRef);
+
+    const listeners = setupNotificationListeners(navigationRef, handleNotificationReceived);
     notificationListener.current = listeners.notificationListener;
     responseListener.current = listeners.responseListener;
 
@@ -50,7 +58,7 @@ const App = () => {
         Notifications.removeNotificationSubscription(responseListener.current);
       }
     };
-  }, [dispatch]);
+  }, [dispatch, notificationTrigger]); 
 
   return (
     <>

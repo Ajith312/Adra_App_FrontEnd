@@ -149,12 +149,6 @@ const RequestForm = () => {
 
   return (
     <ScrollView style={styles.container}>
-       {/* <TouchableOpacity 
-          style={styles.backButton} 
-          onPress={() => navigation.goBack()}
-        >
-          <AntDesign name="arrowleft" size={20} color="black" />
-        </TouchableOpacity> */}
       <View style={styles.formCard}>
         <Text style={styles.formHeadText}>REQUEST FORM</Text>
         <Text style={styles.label}>To</Text>
