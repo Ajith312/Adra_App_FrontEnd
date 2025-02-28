@@ -37,8 +37,8 @@ const EmployeeHome = () => {
   useFocusEffect(
     useCallback(() => {
       if (token) {
-        dispatch(getEmployeeLeaveAndPermissionRequest(token));
-        dispatch(getProfileDetails(token));
+        dispatch(getEmployeeLeaveAndPermissionRequest);
+        dispatch(getProfileDetails);
        
       }
     }, [dispatch, token])

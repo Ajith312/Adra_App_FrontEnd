@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import React, { useCallback, useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
@@ -15,10 +16,9 @@ import {
   getLeaveAndPermissionRequest,
   getProfileDetails,
   getTeamMembersDetails,
-
 } from "../../../Redux/Action/commonAction";
 import HistoryCard from "../Employee/HistoryCard";
-
+import Images from "../../../Utils/Image";
 
 const ManagerHome = () => {
   const navigation = useNavigation();
@@ -28,8 +28,7 @@ const ManagerHome = () => {
     token,
     teamMembersDetails,
     managerNotificationDetails,
-    notificationTrigger
-    
+    notificationTrigger,
   } = useSelector((state) => state.commonState);
 
   useEffect(() => {
@@ -44,15 +43,13 @@ const ManagerHome = () => {
   useFocusEffect(
     useCallback(() => {
       if (token) {
-        dispatch(getEmployeeLeaveAndPermissionRequest(token));
-        dispatch(getProfileDetails(token));
-        dispatch(getTeamMembersDetails(token));
-        dispatch(getLeaveAndPermissionRequest(token));
+        dispatch(getEmployeeLeaveAndPermissionRequest);
+        dispatch(getProfileDetails);
+        dispatch(getTeamMembersDetails);
+        dispatch(getLeaveAndPermissionRequest);
       }
-    }, [token, dispatch,notificationTrigger])
+    }, [dispatch, notificationTrigger])
   );
-
-  
 
   return (
     <ScrollView
@@ -87,7 +84,11 @@ const ManagerHome = () => {
             onPress={() => navigation.navigate("My Teams")}
           >
             <Text style={styles.cardHeading}>Team Members</Text>
-            <Text style={styles.cardValue}>0{teamMembersDetails.length}</Text>
+            <Text style={styles.cardValue}>
+              {teamMembersDetails?.length < 10
+                ? `0${teamMembersDetails.length}`
+                : teamMembersDetails.length}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -96,7 +97,9 @@ const ManagerHome = () => {
           >
             <Text style={styles.cardHeading}>New Requests</Text>
             <Text style={styles.cardValue}>
-              0{managerNotificationDetails.length}
+              {managerNotificationDetails?.length < 10
+                ? `0${managerNotificationDetails.length}`
+                : managerNotificationDetails.length}
             </Text>
           </TouchableOpacity>
         </View>

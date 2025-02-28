@@ -6,19 +6,29 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import LogoImg from "../../../assets/adraLogo.png";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { handleLoginCredentials, handleLogin, updateFcmToken } from "../../Redux/Action/commonAction"; 
+import {
+  handleLoginCredentials,
+  handleLogin,
+  updateFcmToken,
+} from "../../Redux/Action/commonAction";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { updateLoadingSpinner } from "../../Redux/Slice/commonSlice";
 
 const Login = () => {
   const navigation = useNavigation();
-  const { email, password, token, role,fcmToken } = useSelector((state) => state.commonState);
+  const { email, password, token, role, fcmToken,loading } = useSelector(
+    (state) => state.commonState
+  );
   const dispatch = useDispatch();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+ 
 
   const handleTextChange = (field, value) => {
     const payload = { field, value };
@@ -26,14 +36,20 @@ const Login = () => {
   };
 
   const handleLoginSubmit = () => {
-    if (!email || !password) {
-      alert("Please fill all the fields");
+    if (!email && !password) {
+      alert("Email and Password are required");
+    } else if (!email) {
+      alert("Email is required");
+    } else if (!password) {
+      alert("Password is required");
     } else {
+      dispatch(updateLoadingSpinner());
       const payload = { email, password };
       dispatch(handleLogin(payload, navigation));
-      dispatch(updateFcmToken({email,fcmToken})) 
+      dispatch(updateFcmToken({ email, fcmToken }));
     }
   };
+  
 
   useEffect(() => {
     if (token) {
@@ -43,17 +59,15 @@ const Login = () => {
         navigation.navigate("TEAMLEAD");
       }
     }
-  }, [token, role,navigation]);
+  }, [token, role, navigation]);
 
   return (
     <>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
-      <View style={styles.container}>
-        
-      
-        <TouchableOpacity 
-          style={styles.backButton} 
-          onPress={() => navigation.navigate('Details')}
+      <ScrollView style={styles.container}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate("Details")}
         >
           <AntDesign name="arrowleft" size={20} color="black" />
         </TouchableOpacity>
@@ -65,9 +79,9 @@ const Login = () => {
           </View>
           <View style={styles.LoginBox}>
             <View style={styles.Login}>
-              <TextInput 
-                style={styles.input} 
-                placeholder="Enter your email" 
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Your Email I'D"
                 value={email}
                 onChangeText={(text) => handleTextChange("email", text)}
               />
@@ -75,29 +89,44 @@ const Login = () => {
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={styles.passwordInput}
-                  placeholder="Enter your password"
+                  placeholder="Enter Your Password"
                   value={password}
                   secureTextEntry={!isPasswordVisible}
                   onChangeText={(text) => handleTextChange("password", text)}
                 />
-                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-                  <Feather name={isPasswordVisible ? "eye" : "eye-off"} size={20} color="gray" />
+                <TouchableOpacity
+                  onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                >
+                  <Feather
+                    name={isPasswordVisible ? "eye" : "eye-off"}
+                    size={20}
+                    color="gray"
+                  />
                 </TouchableOpacity>
               </View>
-              
-              <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ForgotPassword")}
+              >
                 <Text style={styles.forgetpwdText}>Forgot Password?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={{ width: "100%" }}  onPress={handleLoginSubmit} >
+              <TouchableOpacity
+                style={{ width: "100%" }}
+                onPress={handleLoginSubmit}
+              >
                 <View style={styles.RegisterBtn}>
-                  <Text style={styles.btntext}>Login</Text>
+                  {loading ? (
+                    <ActivityIndicator size="large" color="#fff" />
+                  ) : (
+                    <Text style={styles.btntext}>Login</Text>
+                  )}
                 </View>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };
@@ -139,7 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     height: 50,
     paddingHorizontal: 10,
-    color:"#8391A1"
+    color: "#8391A1",
   },
   passwordContainer: {
     flexDirection: "row",
@@ -155,10 +184,11 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
     height: "100%",
-    color:"#8391A1"
+    color: "#8391A1",
   },
   RegisterBtn: {
-    marginVertical: 20,
+    // marginVertical: 20,
+    marginTop:20,
     width: "100%",
     height: 50,
     borderRadius: 7,
@@ -175,15 +205,15 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: 10,
     fontWeight: "bold",
-    color:"#6A707C"
+    color: "#6A707C",
   },
-  welcomeText:{
-    color:"#263238",
-    fontSize:30,
-    alignSelf:"flex-start",
-    fontWeight:"bold",
-    marginBottom:40,
-    width:"80%",
+  welcomeText: {
+    color: "#263238",
+    fontSize: 30,
+    alignSelf: "flex-start",
+    fontWeight: "bold",
+    marginBottom: 40,
+    width: "80%",
     paddingHorizontal: 20,
-  }
+  },
 });

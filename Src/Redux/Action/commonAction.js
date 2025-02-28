@@ -1,13 +1,30 @@
 import axios from "axios"
 import { API_URL } from '@env';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { updateLoginCredentials, updateLoginResponse,logoutUser, updateProfileDetails, updateManagerNotificationDetails, updateEmployeeNotificationDetails, showToast, updateTeamMembersData } from "../Slice/commonSlice"
+import { updateLoginCredentials, updateLoginResponse,logoutUser, updateProfileDetails, updateManagerNotificationDetails, updateEmployeeNotificationDetails, showToast, updateTeamMembersData, updateRefreshToken, updateLoadingSpinner } from "../Slice/commonSlice"
+import axiosInstance from "../../Service/axiosInstance";
 
 
 
 export const handleLoginCredentials = (payload)=>(dispatch)=>{
     dispatch(updateLoginCredentials(payload))
  
+}
+
+export const handleRefereshToken = async(dispatch)=>{
+    try {
+        const {data} = await axiosInstance.post(`${API_URL}/employee/get-referesh-token`)
+        console.log("RefreshToken",data);
+        if(data.error_code ===200){
+            dispatch(updateRefreshToken(data?.token))
+        }else{
+            dispatch(logoutUser());
+        }
+        
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || "Something went wrong";
+        dispatch(showToast({ type: 'error', message: errorMessage }));
+    }
 }
 
 export const handleLogin = (payload, navigation) => async (dispatch) => {
@@ -19,8 +36,8 @@ export const handleLogin = (payload, navigation) => async (dispatch) => {
             await AsyncStorage.setItem("role", data.role);
 
             dispatch(updateLoginResponse({ token: data.token, role: data.role }));
-            dispatch(showToast({ type: 'success', message: data.message || 'Login Successful' }));
-         
+            // dispatch(showToast({ type: 'success', message: data.message || 'Login Successful' }));
+            dispatch(updateLoadingSpinner())
 
             if (data.role === "developer") {
                 navigation.navigate('EMPLOYEE');
@@ -29,10 +46,12 @@ export const handleLogin = (payload, navigation) => async (dispatch) => {
             }
         } else {
             dispatch(showToast({ type: 'error', message: data.message || 'Invalid credentials' }));
+            dispatch(updateLoadingSpinner());
         }
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Something went wrong";
         dispatch(showToast({ type: 'error', message: errorMessage }));
+        dispatch(updateLoadingSpinner());
     }
 };
 
@@ -52,16 +71,14 @@ export const handleLogout = (navigation) => async (dispatch) => {
     }
 };
 
-export const getProfileDetails = (token) => async (dispatch) => {
+
+export const getProfileDetails = async (dispatch) => {
     try {
-        const { data } = await axios.get(
-            `${API_URL}/employee/get-profile-details`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                "Content-Type": "application/json" 
-            }
+        const { data } = await axiosInstance.get(
+            `${API_URL}/employee/get-profile-details`
         );
         dispatch(updateProfileDetails(data))
+        
 
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Something went wrong";
@@ -70,16 +87,11 @@ export const getProfileDetails = (token) => async (dispatch) => {
 };
 
 
-
-export const leaveAndPermissionRequest = (token, payload) => async (dispatch) => {
+export const leaveAndPermissionRequest = (payload) => async (dispatch) => {
     try {
-        const { data } = await axios.post(
+        const { data } = await axiosInstance.post(
             `${API_URL}/employee/leave-request`,
-            payload,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                "Content-Type": "application/json" 
-            }
+            payload
         );
 
         if(data.error_code === 200){
@@ -93,14 +105,10 @@ export const leaveAndPermissionRequest = (token, payload) => async (dispatch) =>
 }
 
 
-export const getLeaveAndPermissionRequest = (token)=> async(dispatch)=>{
+export const getLeaveAndPermissionRequest = async(dispatch)=>{
     try {
-        const { data } = await axios.get(
+        const { data } = await axiosInstance.get(
             `${API_URL}/employee/get-levaerequest-details`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                "Content-Type": "application/json" 
-            }
         );
         dispatch(updateManagerNotificationDetails(data))
         
@@ -111,14 +119,10 @@ export const getLeaveAndPermissionRequest = (token)=> async(dispatch)=>{
     }
 }
 
-export const getEmployeeLeaveAndPermissionRequest = (token)=> async(dispatch)=>{
+export const getEmployeeLeaveAndPermissionRequest = async(dispatch)=>{
     try {
-        const { data } = await axios.get(
-            `${API_URL}/employee/employee-notification-details`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                "Content-Type": "application/json" 
-            }
+        const { data } = await axiosInstance.get(
+            `${API_URL}/employee/employee-notification-details`
         );
         dispatch(updateEmployeeNotificationDetails(data))
        
@@ -129,19 +133,13 @@ export const getEmployeeLeaveAndPermissionRequest = (token)=> async(dispatch)=>{
 }
 
 
-export const changeRequestStatus = (token, value) => async (dispatch) => {
+export const changeRequestStatus = (value) => async (dispatch) => {
     const { id, acceptedStatus } = value;
 
     try {
-        const { data } = await axios.post(
+        const { data } = await axiosInstance.post(
             `${API_URL}/employee/approve-request/${id}`,
-            { acceptedStatus },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json" 
-                },
-            }
+            { acceptedStatus }
         );
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Something went wrong";
@@ -150,17 +148,12 @@ export const changeRequestStatus = (token, value) => async (dispatch) => {
 };
 
 
-export const getTeamMembersDetails = (token)=> async(dispatch)=>{
+export const getTeamMembersDetails = async(dispatch)=>{
     try {
-        const { data } = await axios.get(
-            `${API_URL}/employee/get-team-details`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-                "Content-Type": "application/json" 
-            }
+        const { data } = await axiosInstance.get(
+            `${API_URL}/employee/get-team-details`
         );
        dispatch(updateTeamMembersData(data))
-        // console.log(data);
        
     } catch (error) {
         const errorMessage = error.response?.data?.message || "Something went wrong";
@@ -171,7 +164,6 @@ export const getTeamMembersDetails = (token)=> async(dispatch)=>{
 
 export const updateFcmToken = ({ fcmToken, email }) => async (dispatch) => {
     console.log("Updating FCM Token:", fcmToken);
-    console.log("email",email);
     try {
       const { data } = await axios.post(
         `${API_URL}/employee/update-fcm-token`,

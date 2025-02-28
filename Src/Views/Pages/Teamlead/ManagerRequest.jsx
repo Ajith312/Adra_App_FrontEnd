@@ -7,11 +7,11 @@ import RequestCard from './RequestCard';
 
 const ManagerRequest = () => {
   const dispatch = useDispatch()
-  const {token,managerNotificationDetails}=useSelector((state)=>state.commonState)
+  const {managerNotificationDetails}=useSelector((state)=>state.commonState)
 
   useFocusEffect(
     useCallback(()=>{
-      dispatch(getLeaveAndPermissionRequest(token))
+      dispatch(getLeaveAndPermissionRequest)
      
     },[managerNotificationDetails])
   )

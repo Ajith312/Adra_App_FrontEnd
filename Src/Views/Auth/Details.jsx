@@ -18,7 +18,7 @@ const Details = () => {
       </View>
       <View style={styles.DetailsTextContainer}>
         <View style={styles.DetailsTextBox}>
-          <Text style={styles.Detailstext}> Plan Your Time Off</Text>
+          <Text style={styles.Detailstext}> Plan your Time off</Text>
           <Text style={styles.DetailsSubtext}>Request leave in just a few taps and stay updated.</Text>
         </View>
         <View style={styles.DetailsTextBtn}>

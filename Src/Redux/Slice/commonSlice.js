@@ -17,7 +17,8 @@ const commonSlice = createSlice({
         toastType:"",
         toastMessage:"",
         modalShow:false,
-        notificationTrigger:0
+        notificationTrigger:0,
+        loading:false
         
 
         
@@ -73,10 +74,13 @@ const commonSlice = createSlice({
         },
         setNotificationTrigger:(state,action)=>{
             state.notificationTrigger=action?.payload
-
-        }
-        
-        
+        },
+        updateRefreshToken: (state, action) => {
+            state.token = action.payload;
+        },
+        updateLoadingSpinner:(state)=>{
+            state.loading=!state.loading
+        }  
     }
 });
 
@@ -95,7 +99,9 @@ export const {
     hideToast,
     updateModelShow,
     setFcmToken,
-    setNotificationTrigger
+    setNotificationTrigger,
+    updateRefreshToken,
+    updateLoadingSpinner
 } = actions;
 
 export default reducer;

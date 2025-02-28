@@ -4,22 +4,19 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Button,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { leaveAndPermissionRequest } from "../../../Redux/Action/commonAction";
-import { AntDesign } from "@expo/vector-icons";
+
 
 const RequestForm = () => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const { token } = useSelector((state) => state.commonState);
+
 
   const [managerId, setManagerId] = useState("");
   const [request, setRequest] = useState("");
@@ -30,6 +27,7 @@ const RequestForm = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showFromTimePicker, setShowFromTimePicker] = useState(false);
   const [comments, setComments] = useState("");
+  const [isCustom, setIsCustom] = useState(false); 
 
   const handleDateChange = (event, selectedDate) => {
     if (selectedDate) {
@@ -57,6 +55,7 @@ const RequestForm = () => {
     setManagerId("");
     setRequest("");
     setComments("");
+    setIsCustom(false)
   };
 
   // const handlePermissionSubmit = (type) => {
@@ -121,7 +120,7 @@ const RequestForm = () => {
       comments,
     };
 
-    if (type === "permission") {
+    if (type === "Permission") {
       if (!fromTime || !toTime) {
         alert("Please fill all the fields");
         return;
@@ -131,7 +130,7 @@ const RequestForm = () => {
         fromTime: fromTime.toLocaleTimeString(),
         toTime: toTime.toLocaleTimeString(),
       };
-    } else if (type === "leave") {
+    } else if (type === "Leave") {
       if (!days) {
         alert("Please fill all the fields");
         return;
@@ -143,14 +142,14 @@ const RequestForm = () => {
     }
 
     const payload = { managerId, requestDetails };
-    dispatch(leaveAndPermissionRequest(token, payload));
+    dispatch(leaveAndPermissionRequest(payload));
     resetInputvalues();
   };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.formCard}>
-        <Text style={styles.formHeadText}>REQUEST FORM</Text>
+        {/* <Text style={styles.formHeadText}>REQUEST FORM</Text> */}
         <Text style={styles.label}>To</Text>
         <View style={styles.pickerContainer}>
           <Picker
@@ -159,11 +158,9 @@ const RequestForm = () => {
             style={styles.picker}
           >
             <Picker.Item label="Select Manager" value="" />
-            <Picker.Item label="Mr.AnguSiva" value="67aacb5a0b0bed162f603b25" />
-            <Picker.Item
-              label="Mr.SivaKumar"
-              value="67b56b6fdf481eddcb85d0c1"
-            />
+            <Picker.Item label="Mr.AnguSiva" value="67beb4dc9e623e519ee87f7d" />
+            <Picker.Item label="Mr.SivaKumar" value="67bec4dcb29fe1c8c4eb9ab8" />
+            <Picker.Item label="Ms.Punitha Murugesan" value="67c0146affaacb0b46476cdd" />
           </Picker>
         </View>
 
@@ -175,8 +172,8 @@ const RequestForm = () => {
           style={styles.picker}
         >
           <Picker.Item label="Select Request" value="" />
-          <Picker.Item label="Leave" value="leave" />
-          <Picker.Item label="Permission" value="permission" />
+          <Picker.Item label="Leave" value="Leave" />
+          <Picker.Item label="Permission" value="Permission" />
         </Picker>
         </View>
 
@@ -193,7 +190,7 @@ const RequestForm = () => {
           />
         )}
 
-        {request === "leave" && (
+        {/* {request === "leave" && (
           <>
             <Text style={styles.label}>No of days</Text>
             <View style={styles.pickerContainer}>
@@ -208,9 +205,46 @@ const RequestForm = () => {
             </Picker>
             </View>
           </>
+        )} */}
+
+        {request === "Leave" && (
+  <>
+    <Text style={styles.label}>No of days</Text>
+    <View style={styles.pickerContainer}>
+      <Picker
+        selectedValue={days}
+        onValueChange={(itemValue) => {
+          if (itemValue === "custom") {
+            setDays(""); 
+            setIsCustom(true); 
+          } else {
+            setDays(itemValue);
+            setIsCustom(false);
+          }
+        }}
+        style={styles.picker}
+      >
+        <Picker.Item label="Select days" value="" />
+        <Picker.Item label="1" value="1" />
+        <Picker.Item label="2" value="2" />
+        <Picker.Item label="Custom" value="custom" />
+      </Picker>
+    </View>
+
+    {isCustom && (
+      <TextInput
+        style={styles.customInput}
+        placeholder="Enter no. of days"
+        keyboardType="numeric"
+        value={days}
+        onChangeText={(text) => setDays(text)}
+      />
+    )}
+  </>
         )}
 
-        {request === "permission" && (
+
+        {request === "Permission" && (
           <>
             <Text style={styles.label}>From</Text>
             <Text
@@ -345,4 +379,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#F5F5F5",
   },
+  customInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 10,
+  }
+  
 });

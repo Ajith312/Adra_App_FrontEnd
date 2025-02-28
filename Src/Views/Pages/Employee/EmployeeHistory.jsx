@@ -16,14 +16,14 @@ import { updateFilteredData } from "../../../Redux/Slice/commonSlice";
 
 const EmployeeHistory = () => {
   const dispatch = useDispatch();
-  const { employeeNotificationDetails, token, profileDetails, filteredData } =
+  const { employeeNotificationDetails, profileDetails, filteredData } =
     useSelector((state) => state.commonState);
   const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(getEmployeeLeaveAndPermissionRequest(token));
-    }, [dispatch, token])
+      dispatch(getEmployeeLeaveAndPermissionRequest);
+    }, [dispatch])
   );
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const EmployeeHistory = () => {
             <TouchableOpacity
               style={styles.filterOption}
               onPress={() => {
-                handleFilterHistory("approved");
+                handleFilterHistory("Approved");
               }}
             >
               <Text style={styles.modalText}>Approved</Text>
@@ -128,7 +128,7 @@ const EmployeeHistory = () => {
             <TouchableOpacity
               style={styles.filterOption}
               onPress={() => {
-                handleFilterHistory("pending");
+                handleFilterHistory("Pending");
               }}
             >
               <Text style={styles.modalText}>Pending</Text>
@@ -137,7 +137,7 @@ const EmployeeHistory = () => {
             <TouchableOpacity
               style={styles.filterOption}
               onPress={() => {
-                handleFilterHistory("rejected");
+                handleFilterHistory("Rejected");
               }}
             >
               <Text style={styles.modalText}>Rejected</Text>

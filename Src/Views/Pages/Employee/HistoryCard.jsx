@@ -7,11 +7,11 @@ const HistoryCard = ({ item }) => {
         styles.card,
         {
             borderLeftColor:
-            item?.acceptedStatus === "approved"
+            item?.acceptedStatus === "Approved"
               ? "#1EAA7E"
-              : item?.acceptedStatus === "rejected"
+              : item?.acceptedStatus === "Rejected"
               ? "#C84848"
-              : item?.acceptedStatus === "pending"
+              : item?.acceptedStatus === "Pending"
               ? "#E2911E"
               : "#E2911E",
         },
@@ -23,11 +23,11 @@ const HistoryCard = ({ item }) => {
             styles.statusText,
             {
               color:
-                item?.acceptedStatus === "approved"
+                item?.acceptedStatus === "Approved"
                   ? "#1EAA7E"
-                  : item?.acceptedStatus === "rejected"
+                  : item?.acceptedStatus === "Rejected"
                   ? "#C84848"
-                  : item?.acceptedStatus === "pending"
+                  : item?.acceptedStatus === "Pending"
                   ? "#E2911E"
                   : "#E2911E",
             },
@@ -37,18 +37,18 @@ const HistoryCard = ({ item }) => {
         </Text>
       </View>
       <View style={styles.timeBox}>
-        <Text>{item?.requestDetails?.date}</Text>
+        <Text><Text style={styles.detailsKey}>Date: </Text>{item?.requestDetails?.date}</Text>
       </View>
       <Text>
-        {item?.requestDetails?.request == "permission" ? (
+        {item?.requestDetails?.request == "Permission" ? (
           <Text>
-            {item?.requestDetails?.fromTime} to {item?.requestDetails?.toTime}
+            <Text style={styles.detailsKey}>Time: </Text>{item?.requestDetails?.fromTime} to {item?.requestDetails?.toTime}
           </Text>
         ) : (
-          <Text>{item?.requestDetails?.days}Days</Text>
+          <Text><Text style={styles.detailsKey}>Days: </Text>{item?.requestDetails?.days} Days</Text>
         )}
       </Text>
-      <Text>{item?.requestDetails?.comments}</Text>
+      <Text><Text style={styles.detailsKey}>Comments: </Text>{item?.requestDetails?.comments}</Text>
     </TouchableOpacity>
   );
 };
@@ -78,12 +78,18 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   typeText: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "700",
   },
   statusText: {
-    fontSize: 14,
+    fontSize: 16,
     // color: "#E2911E",
-    fontWeight: "500",
+    fontWeight: "700",
+  },
+  detailsKey: { 
+    fontSize: 14, 
+    marginVertical: 3, 
+    color: "#3b8287",
+    fontWeight:"bold"  
   },
 });

@@ -10,13 +10,13 @@ import { updateFilteredData } from "../../../Redux/Slice/commonSlice";
 
 const ManagerHistory = () => {
     const dispatch = useDispatch()
-    const {employeeNotificationDetails, token,profileDetails,filteredData} = useSelector((state) => state.commonState)
+    const {employeeNotificationDetails,profileDetails,filteredData} = useSelector((state) => state.commonState)
      const [modalVisible, setModalVisible] = useState(false);
 
     useFocusEffect(
       useCallback(() => {
-        dispatch(getEmployeeLeaveAndPermissionRequest(token));
-      }, [dispatch, token])
+        dispatch(getEmployeeLeaveAndPermissionRequest);
+      }, [dispatch])
     );
 
      useEffect(() => {
@@ -112,14 +112,14 @@ const ManagerHistory = () => {
                     <Text style={styles.modalText}>All</Text>
                   </TouchableOpacity>
       
-                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("approved")}}>
+                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("Approved")}}>
                     <Text style={styles.modalText}>Approved</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("pending")}}>
+                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("Pending")}}>
                     <Text style={styles.modalText}>Pending</Text>
                   </TouchableOpacity>
       
-                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("rejected")}}>
+                  <TouchableOpacity style={styles.filterOption}  onPress={()=>{handleFilterHistory("Rejected")}}>
                     <Text style={styles.modalText}>Rejected</Text>
                   </TouchableOpacity>
                 </View>

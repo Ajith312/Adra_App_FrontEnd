@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import Images from "../../../Utils/Image";
+
 
 const TeamCard = ({item}) => {
   return (
@@ -8,9 +8,9 @@ const TeamCard = ({item}) => {
       <View style={styles.ImgContainer}>
         <View style={styles.CardImage}>
         <Image
-           source={Images.prakash}
+           source={{uri:item?.imageUrl||"https://greenacresportsmed.com.au/wp-content/uploads/2018/01/dummy-image.jpg"}}
            style={styles.cardimg}
-         resizeMode="contain"
+           resizeMode="contain"
          />
         </View>
         <View style={styles.CardName}>
@@ -32,7 +32,7 @@ const TeamCard = ({item}) => {
           <Text style={styles.detailsValue}>{item?.leaveDays}</Text>
         </View>
         <View style={styles.details}>
-          <Text style={styles.detailsName}>Permission Taken :</Text>
+          <Text style={styles.detailsName}>Permission Balance :</Text>
           <Text style={styles.detailsValue}>{item?.permission}</Text>
         </View>
       </View>
